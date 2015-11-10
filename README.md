@@ -150,13 +150,21 @@ typescriptPreprocessor: {
 
 ### ignorePath: (string)=> boolean
 
-It could be used to ignore files that you don't want to serve. 
+It could be used to ignore files that you don't want to serve. Pay attention that  ``ignorePath`` runs before ``transformPath``
+
+defualt value:
+```
+function(path){
+ return /\.d\.ts$//.test(path);
+}
+
+```
 
 ### tsconfigOverrides: any
 
 You can provide or override any options avaliable by ``gulp-typescript``, for more info [you can access gulp-typescript project options](https://github.com/ivogabe/gulp-typescript#options).
 
-### License
+## License
 
 ``karma-typescript-preprocessor2`` is licensed under the [MIT license](https://github.com/klaygomes/karma-typescript-preprocessor2/blob/master/LICENSE).
 

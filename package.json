@@ -1,0 +1,22 @@
+{
+  "name": "karma-typescript-preprocessor2",
+  "version": "1.0.0",
+  "description": "Leverage the power of gulp-typescript compiler to a simple yet powerfull karma preprocessor plugin",
+  "main": "index.js",
+  "scripts": {
+    "test": "mocha --require test/support/env --reporter spec --bail --check-leaks test/"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/klaygomes/karma-typescript-preprocessor2.git"
+  },
+  "keywords": [
+    "karma-typescript-preprocessor"
+  ],
+  "author": "Cleiton Loiola <klaygomes at gmail dot com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/klaygomes/karma-typescript-preprocessor2/issues"
+  },
+  "homepage": "https://github.com/klaygomes/karma-typescript-preprocessor2#readme"
+}

@@ -1,8 +1,20 @@
-module.exports = (function () {
+/* global process*/
+
+/*
+    dirty hack to prevent a annoying bug from gulp-typescript
+*/
+
+var isInTestMode = process.env.testMode === "true";
+var dontCompile  = process.env.dontCompile === "true";
+
+module.exports = (function (testMode) {
+    
+    
     
     var ts          = require('gulp-typescript')
     ,   Writable    = require('stream').Writable
-    ,   path        = require("path");
+    ,   path        = require("path")
+    ,   typescript = isInTestMode? require('typescript'):undefined;//gulp-typescript bug
 
     var state = {
         idle                 :       0,
@@ -14,14 +26,18 @@ module.exports = (function () {
 
     function factoryTypeScriptPreprocessor(logger, helper, config) {
 
+
+        if(toString.call(config.tsconfigPath) !== "[object String]"){
+            throw new Error("tsconfigPath was not defined");
+        } 
+
         var log = logger.create('preprocessor:typescript')
         ,   _compiledBuffer  = []
         ,   _servedBuffer    = []
         ,   _                = helper._
         ,   tsProject        = ts.createProject(config.tsconfigPath, {
-                sortOutput    : true,
-                noEmitOnError : false,
-                outDir        : undefined
+                outDir        : undefined,
+                typescript:typescript
             });
         
         
@@ -32,12 +48,12 @@ module.exports = (function () {
             return  filepath.replace(/\.ts$/i, '.js');
         }];
         
+        
         if(_.isFunction(config.transformPath)){
                config.transformPath = [config.transformPath];     
-        } else {
+        } else if(!_.isArray(config.transformPath)) {
             throw new Error("transformPath must be an array or a function");
-        }
-        
+        }        
         
          /*
             It is used to ignore files
@@ -50,6 +66,8 @@ module.exports = (function () {
         
 
         function compile() {
+            if(dontCompile)return;
+            
             log.debug('Compiling ts files...');
             
             _currentState   = state.compiling,
@@ -115,9 +133,9 @@ module.exports = (function () {
             requestedFile.path  = transformPath(requestedFile.path);
             baseName            = path.basename(requestedFile.path).toString();
 
-            //simple hack i used to prevent infinite loop
+           
             if (requestedFile.sha) {
-                delete requestedFile.sha;
+                delete requestedFile.sha; //simple hack i used to prevent infinite loop
                 _feedBuffer(requestedFile, done);
                 compile();
                 return;

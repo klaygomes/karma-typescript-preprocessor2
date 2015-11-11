@@ -1,0 +1,10 @@
+{
+  "compilerOptions": {
+    "noLib": false
+  },
+  "exclude": [
+    ".git",
+    ".vs",
+    "node_modules"
+  ]
+}

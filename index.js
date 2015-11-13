@@ -25,20 +25,32 @@ module.exports = (function (testMode) {
     var _currentState      = state.idle;
 
     function factoryTypeScriptPreprocessor(logger, helper, config) {
-
-
+        
+        var _                = helper._;
+        
+        /*
+            tsConfigPath must aways be present 
+        */
         if(toString.call(config.tsconfigPath) !== "[object String]"){
             throw new Error("tsconfigPath was not defined");
         } 
-
-        var log = logger.create('preprocessor:typescript')
-        ,   _compiledBuffer  = []
-        ,   _servedBuffer    = []
-        ,   _                = helper._
-        ,   tsProject        = ts.createProject(config.tsconfigPath, {
+        
+                
+        /*
+            compilerOptions
+        */
+        var compilerOptions = (config.compilerOptions || config.tsconfigOverrides) || {};
+        
+        if(!_.isObject(compilerOptions) || _.isDate(compilerOptions)){
+            throw new Error("compilerOptions if defined, show be an object.")
+        }
+        
+        var defultCompilerOptions = {
                 outDir        : undefined,
                 typescript:typescript
-            });
+            };
+        
+        _.extend(compilerOptions, defultCompilerOptions);
         
         
         /*
@@ -58,13 +70,17 @@ module.exports = (function (testMode) {
          /*
             It is used to ignore files
         */
-        config.ignorePath = config.ignorePath || _.noop;
+        config.ignorePath = (config.ignorePath || _.noop);
         
         if(!_.isFunction(config.ignorePath)){
             throw new Error("ignorePath must be a function")
         }
         
-
+        var log = logger.create('preprocessor:typescript')
+        ,   _compiledBuffer  = []
+        ,   _servedBuffer    = []
+        ,   tsProject        = ts.createProject(config.tsconfigPath, compilerOptions);
+        
         function compile() {
             if(dontCompile)return;
             

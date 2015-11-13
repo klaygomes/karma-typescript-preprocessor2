@@ -13,7 +13,7 @@ First you need to include reference to this plugin in your `package.json`, just 
   {
     "devDependencies": {
       "karma": "^0.13.15",
-      "karma-typescript-preprocessor2": "1.0.2"
+      "karma-typescript-preprocessor2": "1.1.0"
     }
   }
 ```
@@ -36,7 +36,7 @@ module.exports = function(config) {
     typescriptPreprocessor: {
       // options passed to typescript compiler 
       tsconfigPath: './tsconfig.json', // *obligatory
-      tsconfigOverrides: { // *optional
+      compilerOptions: { // *optional
         removeComments: false
       },
       ignorePath: function(path){ // ignore all files that ends with .d.ts (this files will not be served)
@@ -78,7 +78,7 @@ module.exports = function(config) {
 }
 ```
 
-By design ``karma-typescript-preprocessor2`` only allows primary configuration build by ``tsconfig.json`` . Working this way, a lot of problems with typos and references are completely solved, as compiler will use same ``basedir`` to resolve files, but you can always override (or include) new options by using ``tsconfigOverrides`` property.
+By design ``karma-typescript-preprocessor2`` only allows primary configuration build by ``tsconfig.json`` . Working this way, a lot of problems with typos and references are completely solved, as compiler will use same ``basedir`` to resolve files, but you can always override (or include) new options by using ``compilerOptions`` property.
 
 ## Unsuported typescript configuration options
 As we use gulp-typescript to transpiler typescript code, we have the same unsuported properties as theirs, so:
@@ -132,7 +132,7 @@ If ``file1.spec.ts`` and ``file2.spec.ts`` reference ``file1.ts`` and ``file2.ts
 typescriptPreprocessor: {
   // options passed to the typescript compiler 
   tsconfigPath: './tsconfig.json', //*obligatory
-  tsconfigOverrides: {//*optional
+  compilerOptions: {//*optional
     removeComments: false
   },
   // transforming the filenames 
@@ -160,9 +160,9 @@ function(path){
 
 ```
 
-### tsconfigOverrides: any
+### compilerOptions: any
 
-You can provide or override any options avaliable by ``gulp-typescript``, for more info [you can access gulp-typescript project options](https://github.com/ivogabe/gulp-typescript#options).
+You can provide or override any compiler options avaliable by ``gulp-typescript``, for more info [you can access gulp-typescript project options](https://github.com/ivogabe/gulp-typescript#options).
 
 ## License
 

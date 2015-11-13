@@ -26,9 +26,11 @@ var scope = {};
 
 describe("factoryTypeScriptPreprocessor", function(){
 	beforeEach(function(){
-		simple.mock(config, 'tsconfigPath', './tsconfig.json');
-		simple.mock(config, 'transformPath', underscore.noop);
-		simple.mock(config, 'ignorePath', undefined);
+		simple.mock(config, 'tsconfigPath'		, './tsconfig.json');
+		simple.mock(config, 'transformPath'		, underscore.noop);
+		simple.mock(config, 'ignorePath'		, undefined);
+		simple.mock(config, 'tsconfigOverrides'	, undefined);
+		simple.mock(config, 'compilerOptions'	, undefined)
 	});
 		
 	describe("factory", function(){	
@@ -99,7 +101,26 @@ describe("factoryTypeScriptPreprocessor", function(){
 			(function(){
 				preprocessor.call(scope, logger, util, config);					
 			}).should.not.throw("ignorePath must be a function");
-		});		
+		});
+		
+		it("Should throw an exception if compilerOptions is not defined as object.", function(){
+		
+		simple.mock(config, 'compilerOptions'	, 1/*a number */);
+			(function asNumber(){
+				preprocessor.call(scope, logger, util, config);					
+			}).should.throw("compilerOptions if defined, show be an object.");
+			
+		simple.mock(config, 'compilerOptions'	, 'string'/*a string */);
+			(function asString(){
+				preprocessor.call(scope, logger, util, config);					
+			}).should.throw("compilerOptions if defined, show be an object.");
+			
+		simple.mock(config, 'compilerOptions'	, new Date/*a date */);
+			(function asDate(){
+				preprocessor.call(scope, logger, util, config);					
+			}).should.throw("compilerOptions if defined, show be an object.");	
+		
+		});				
 				
 	});	
 });

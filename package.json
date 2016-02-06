@@ -16,6 +16,7 @@
     "typescript": "1.6.2"
   },
   "dependencies": {
+    "gulp-sourcemaps": "^1.6.0",
     "gulp-typescript": "^2.9.2"
   },
   "repository": {

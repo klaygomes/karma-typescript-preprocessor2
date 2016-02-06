@@ -12,6 +12,7 @@ module.exports = (function (testMode) {
     
     
     var ts          = require('gulp-typescript')
+    ,   sourcemaps  = require('gulp-sourcemaps')
     ,   Writable    = require('stream').Writable
     ,   path        = require("path")
     ,   typescript = isInTestMode? require('typescript'):undefined;//gulp-typescript bug
@@ -90,7 +91,9 @@ module.exports = (function (testMode) {
             _compiledBuffer = [];
             
             var output      = Writable({ objectMode: true }),
-                tsResult    = tsProject.src().pipe(ts(tsProject));
+                tsResult    = tsProject.src()
+                    .pipe(sourcemaps.init())
+                    .pipe(ts(tsProject));
 
             // save compiled files in memory 
             output._write   = function (chunk, enc, next) {
@@ -98,7 +101,10 @@ module.exports = (function (testMode) {
                 next();
             };
 
-            tsResult.js.pipe(output);
+            tsResult.js
+                .pipe(sourcemaps.write(config.sourcemapOptions || {}))
+                .pipe(output);
+
             //called at the end of compilation process
             tsResult.js.on('end', function () {
                 log.debug('Compilation completed!');

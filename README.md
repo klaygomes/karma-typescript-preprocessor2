@@ -30,8 +30,11 @@ Here is a full featured example with all options that you can use to configure t
 // karma.conf.js 
 module.exports = function(config) {
   config.set({
+    files: [
+      '**/*.ts'   // Preprocessor will convert Typescript to Javascript
+    ],
     preprocessors: {
-      '**/*.ts': ['typescript']
+      '**/*.ts': ['typescript', 'sourcemap']   // Use karma-sourcemap-loader
     },
     typescriptPreprocessor: {
       // options passed to typescript compiler 
@@ -39,7 +42,10 @@ module.exports = function(config) {
       compilerOptions: { // *optional
         removeComments: false
       },
-      ignorePath: function(path){ // ignore all files that ends with .d.ts (this files will not be served)
+      // Options passed to gulp-sourcemaps to create sourcemaps
+      sourcemapOptions: {includeContent: true, sourceRoot: '/src'},
+      // ignore all files that ends with .d.ts (this files will not be served)
+      ignorePath: function(path){ 
        return /\.d\.ts$/.test(path);
       },
       // transforming the filenames 
@@ -89,6 +95,9 @@ As we use gulp-typescript to transpiler typescript code, we have the same unsupo
  - project - See "Using tsconfig.json".
  - 
 And obvious ones: help, version
+
+## Sourcemaps
+Transpiling with gulp-typescript requires the use of gulp-sourcemaps to create sourcemaps.
 
 ## Plugin Options
 
@@ -159,6 +168,10 @@ function(path){
 }
 
 ```
+
+### sourcemapOptions: any
+
+Specify ``gulp-sourcemaps`` write options. Inline sourcemaps are the easiest to configure for testing. For more info [see gulp-sourcemaps write options](https://www.npmjs.com/package/gulp-sourcemaps).
 
 ### compilerOptions: any
 

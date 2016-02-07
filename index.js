@@ -25,7 +25,7 @@ module.exports = (function (testMode) {
 
     var _currentState      = state.idle;
 
-    function factoryTypeScriptPreprocessor(logger, helper, config) {
+    function factoryTypeScriptPreprocessor(logger, helper, config, basePath) {
         
         var _                = helper._;
         
@@ -80,7 +80,8 @@ module.exports = (function (testMode) {
         var log = logger.create('preprocessor:typescript')
         ,   _compiledBuffer  = []
         ,   _servedBuffer    = []
-        ,   tsProject        = ts.createProject(config.tsconfigPath, compilerOptions);
+        ,   tsconfigPath     = path.resolve(basePath, config.tsconfigPath)
+        ,   tsProject        = ts.createProject(tsconfigPath, compilerOptions);
         
         function compile() {
             if(dontCompile)return;
@@ -211,7 +212,7 @@ module.exports = (function (testMode) {
         }
     }
 
-    factoryTypeScriptPreprocessor.$inject = ['logger', 'helper', 'config.typescriptPreprocessor'];
+    factoryTypeScriptPreprocessor.$inject = ['logger', 'helper', 'config.typescriptPreprocessor', 'config.basePath'];
 
     return {
         'preprocessor:typescript': ['factory', factoryTypeScriptPreprocessor]

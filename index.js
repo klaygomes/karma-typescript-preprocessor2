@@ -12,6 +12,7 @@ module.exports = (function (testMode) {
     
     
     var ts          = require('gulp-typescript')
+    ,   sourcemaps  = require('gulp-sourcemaps')
     ,   Writable    = require('stream').Writable
     ,   path        = require("path")
     ,   typescript = isInTestMode? require('typescript'):undefined;//gulp-typescript bug
@@ -24,7 +25,7 @@ module.exports = (function (testMode) {
 
     var _currentState      = state.idle;
 
-    function factoryTypeScriptPreprocessor(logger, helper, config) {
+    function factoryTypeScriptPreprocessor(logger, helper, config, basePath) {
         
         var _                = helper._;
         
@@ -79,7 +80,8 @@ module.exports = (function (testMode) {
         var log = logger.create('preprocessor:typescript')
         ,   _compiledBuffer  = []
         ,   _servedBuffer    = []
-        ,   tsProject        = ts.createProject(config.tsconfigPath, compilerOptions);
+        ,   tsconfigPath     = path.resolve(basePath, config.tsconfigPath)
+        ,   tsProject        = ts.createProject(tsconfigPath, compilerOptions);
         
         function compile() {
             if(dontCompile)return;
@@ -90,7 +92,9 @@ module.exports = (function (testMode) {
             _compiledBuffer = [];
             
             var output      = Writable({ objectMode: true }),
-                tsResult    = tsProject.src().pipe(ts(tsProject));
+                tsResult    = tsProject.src()
+                    .pipe(sourcemaps.init())
+                    .pipe(ts(tsProject));
 
             // save compiled files in memory 
             output._write   = function (chunk, enc, next) {
@@ -98,7 +102,10 @@ module.exports = (function (testMode) {
                 next();
             };
 
-            tsResult.js.pipe(output);
+            tsResult.js
+                .pipe(sourcemaps.write(config.sourcemapOptions || {}))
+                .pipe(output);
+
             //called at the end of compilation process
             tsResult.js.on('end', function () {
                 log.debug('Compilation completed!');
@@ -205,7 +212,7 @@ module.exports = (function (testMode) {
         }
     }
 
-    factoryTypeScriptPreprocessor.$inject = ['logger', 'helper', 'config.typescriptPreprocessor'];
+    factoryTypeScriptPreprocessor.$inject = ['logger', 'helper', 'config.typescriptPreprocessor', 'config.basePath'];
 
     return {
         'preprocessor:typescript': ['factory', factoryTypeScriptPreprocessor]

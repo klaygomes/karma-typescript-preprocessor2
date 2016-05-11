@@ -8,9 +8,9 @@ var isInTestMode = process.env.testMode === "true";
 var dontCompile  = process.env.dontCompile === "true";
 
 module.exports = (function (testMode) {
-    
-    
-    
+
+
+
     var ts          = require('gulp-typescript')
     ,   sourcemaps  = require('gulp-sourcemaps')
     ,   Writable    = require('stream').Writable
@@ -26,77 +26,77 @@ module.exports = (function (testMode) {
     var _currentState      = state.idle;
 
     function factoryTypeScriptPreprocessor(logger, helper, config, basePath) {
-        
+
         var _                = helper._;
-        
+
         /*
-            tsConfigPath must aways be present 
+            tsConfigPath must aways be present
         */
         if(toString.call(config.tsconfigPath) !== "[object String]"){
             throw new Error("tsconfigPath was not defined");
-        } 
-        
-                
+        }
+
+
         /*
             compilerOptions
         */
         var compilerOptions = (config.compilerOptions || config.tsconfigOverrides) || {};
-        
+
         if(!_.isObject(compilerOptions) || _.isDate(compilerOptions)){
             throw new Error("compilerOptions if defined, show be an object.")
         }
-        
+
         var defultCompilerOptions = {
                 outDir        : undefined,
                 typescript:typescript
             };
-        
+
         _.extend(compilerOptions, defultCompilerOptions);
-        
-        
+
+
         /*
             It is used to change virtual path of served files
         */
         config.transformPath = config.transformPath || [function(filepath){
             return  filepath.replace(/\.ts$/i, '.js');
         }];
-        
-        
+
+
         if(_.isFunction(config.transformPath)){
-               config.transformPath = [config.transformPath];     
+               config.transformPath = [config.transformPath];
         } else if(!_.isArray(config.transformPath)) {
             throw new Error("transformPath must be an array or a function");
-        }        
-        
+        }
+
          /*
             It is used to ignore files
         */
         config.ignorePath = (config.ignorePath || _.noop);
-        
+
         if(!_.isFunction(config.ignorePath)){
             throw new Error("ignorePath must be a function")
         }
-        
+
         var log = logger.create('preprocessor:typescript')
         ,   _compiledBuffer  = []
         ,   _servedBuffer    = []
         ,   tsconfigPath     = path.resolve(basePath, config.tsconfigPath)
         ,   tsProject        = ts.createProject(tsconfigPath, compilerOptions);
-        
+
         function compile() {
             if(dontCompile)return;
-            
+
             log.debug('Compiling ts files...');
-            
+
             _currentState   = state.compiling,
             _compiledBuffer = [];
-            
+
             var output      = Writable({ objectMode: true }),
                 tsResult    = tsProject.src()
                     .pipe(sourcemaps.init())
                     .pipe(ts(tsProject));
 
-            // save compiled files in memory 
+            // save compiled files in memory
             output._write   = function (chunk, enc, next) {
                 _compiledBuffer.unshift(chunk);
                 next();
@@ -118,7 +118,7 @@ module.exports = (function (testMode) {
             return "/* preprocessor:typescript --> " + message + " */"
         }
 
-        function transformPath(filepath) {           
+        function transformPath(filepath) {
             return _.reduce(config.transformPath, function(memo, clb){
                 //I simple ignore clb that was not function
               return _.isFunction(clb) ? clb.call(config, memo  ): memo
@@ -142,39 +142,35 @@ module.exports = (function (testMode) {
             _servedBuffer.unshift({ file: file, done: done });
         }
 
-        //Used to fetch files from buffer 
-        // if requested file contains a sha defined, 
+        //Used to fetch files from buffer
+        // if requested file contains a sha defined,
         //it means this file was changed as karma
         function _serveFile(requestedFile, done) {
             var   compiled
                 , temp = []
-                , wasCompiled
-                , baseName;
+                , wasCompiled;
 
             log.debug("Fetching " + requestedFile.originalPath + ' from buffer');
-            
-            requestedFile.path  = transformPath(requestedFile.path);
-            baseName            = path.basename(requestedFile.path).toString();
 
-           
+            requestedFile.path  = transformPath(requestedFile.path);
+
+
             if (requestedFile.sha) {
                 delete requestedFile.sha; //simple hack i used to prevent infinite loop
                 _feedBuffer(requestedFile, done);
                 compile();
                 return;
             }
-            
+
             while (compiled = _compiledBuffer.shift()) {
-                //TODO: improve comparation of files, as it can lead to unespected behavior
-                //if two files has same name
-                if (path.basename(compiled.path).toString() == baseName) {
+                if (compiled.path === requestedFile.path) {
                     wasCompiled = true;
                     done(null, compiled.contents.toString());
                 } else {
                     temp.unshift(compiled);
                 }
             }
-            
+
             //refeed buffer
             _compiledBuffer = temp;
 
@@ -190,7 +186,7 @@ module.exports = (function (testMode) {
         compile();
 
         return function createTypeScriptPreprocessor(content, file, done) {
-            
+
             //ignoring files
             if (!!config.ignorePath(file.path)) {
                 log.debug(file.path + ' was skipped');

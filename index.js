@@ -144,7 +144,7 @@ module.exports = (function (testMode) {
 
         //Used to fetch files from buffer
         // if requested file contains a sha defined,
-        //it means this file was changed as karma
+        //it means this file was changed by karma
         function _serveFile(requestedFile, done) {
             var   compiled
                 , temp = []
@@ -175,7 +175,7 @@ module.exports = (function (testMode) {
             _compiledBuffer = temp;
 
             //if file was not found in the stream
-            //maybe it is not compiled or is an definition file
+            //maybe it is not compiled or it is a definition file
             if (!wasCompiled) {
                 log.debug(requestedFile.originalPath + ' was not found. Maybe it was not compiled or it is a definition file.');
                 done(null, dummyFile('This file was not compiled'));

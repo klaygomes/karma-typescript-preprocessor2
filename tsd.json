@@ -1,0 +1,21 @@
+{
+  "version": "v4",
+  "repo": "borisyankov/DefinitelyTyped",
+  "ref": "master",
+  "path": "typings",
+  "bundle": "typings/tsd.d.ts",
+  "installed": {
+    "gulp-typescript/gulp-typescript.d.ts": {
+      "commit": "5e960679e6f9ae6ce905b1db0ad36fc189cd2eca"
+    },
+    "node/node.d.ts": {
+      "commit": "5e960679e6f9ae6ce905b1db0ad36fc189cd2eca"
+    },
+    "underscore/underscore.d.ts": {
+      "commit": "5e960679e6f9ae6ce905b1db0ad36fc189cd2eca"
+    },
+    "vinyl/vinyl.d.ts": {
+      "commit": "5e960679e6f9ae6ce905b1db0ad36fc189cd2eca"
+    }
+  }
+}

@@ -104,6 +104,7 @@ describe("factoryTypeScriptPreprocessor", function(){
 		});
 		
 		it("Should throw an exception if compilerOptions is not defined as object.", function(){
+			
 		
 		simple.mock(config, 'compilerOptions'	, 1/*a number */);
 			(function asNumber(){
@@ -117,6 +118,11 @@ describe("factoryTypeScriptPreprocessor", function(){
 			
 		simple.mock(config, 'compilerOptions'	, new Date/*a date */);
 			(function asDate(){
+				preprocessor.call(scope, logger, util, config);					
+			}).should.throw("compilerOptions if defined, show be an object.");	
+			
+		simple.mock(config, 'compilerOptions'	, /regex/i/*a date */);
+			(function asRegex(){
 				preprocessor.call(scope, logger, util, config);					
 			}).should.throw("compilerOptions if defined, show be an object.");	
 		

@@ -1,6 +1,6 @@
 {
   "name": "karma-typescript-preprocessor2",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "description": "Leverage the power of gulp-typescript compiler to a simple yet powerfull karma preprocessor plugin",
   "main": "index.js",
   "scripts": {

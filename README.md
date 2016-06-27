@@ -13,7 +13,7 @@ First you need to include reference to this plugin in your `package.json`, just 
   {
     "devDependencies": {
       "karma": "^0.13.15",
-      "karma-typescript-preprocessor2": "1.2.0"
+      "karma-typescript-preprocessor2": "1.2.1"
     }
   }
 ```

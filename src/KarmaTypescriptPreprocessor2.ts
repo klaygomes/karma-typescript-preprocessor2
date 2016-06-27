@@ -1,5 +1,3 @@
-/// <reference path="IConfigOptions" />
-
 import * as GulpTypescript from 'gulp-typescript';
 import * as streamt from "stream";
 

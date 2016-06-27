@@ -6,10 +6,9 @@
 
 var isInTestMode = process.env.testMode === "true";
 var dontCompile  = process.env.dontCompile === "true";
+var sep = require("path").sep;
 
 module.exports = (function (testMode) {
-
-
 
     var ts          = require('gulp-typescript')
     ,   sourcemaps  = require('gulp-sourcemaps')
@@ -142,6 +141,11 @@ module.exports = (function (testMode) {
             _servedBuffer.unshift({ file: file, done: done });
         }
 
+        //Called to normalize file paths
+        function _normalize(path){
+            return path.replace(/[\/|\\]/g, sep);
+        }
+
         //Used to fetch files from buffer
         // if requested file contains a sha defined,
         //it means this file was changed by karma
@@ -150,9 +154,9 @@ module.exports = (function (testMode) {
                 , temp = []
                 , wasCompiled;
 
-            log.debug("Fetching " + requestedFile.originalPath + ' from buffer');
-
             requestedFile.path  = transformPath(requestedFile.path);
+
+            log.debug("Fetching " + requestedFile.path + ' from buffer');
 
 
             if (requestedFile.sha) {
@@ -163,7 +167,7 @@ module.exports = (function (testMode) {
             }
 
             while (compiled = _compiledBuffer.shift()) {
-                if (compiled.path === requestedFile.path) {
+                if (_normalize(transformPath(compiled.path)) === _normalize(requestedFile.path)) {
                     wasCompiled = true;
                     done(null, compiled.contents.toString());
                 } else {

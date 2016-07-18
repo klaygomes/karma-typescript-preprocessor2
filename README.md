@@ -1,3 +1,10 @@
+
+Transpile files in memory using gulp-typescript. No temp files are generated.
+
+[![NPM](https://nodei.co/npm/karma-typescript-preprocessor2.png?downloads=true&downloadRank=true)](https://nodei.co/npm/karma-typescript-preprocessor2/)
+
+---
+
 This preprocessor uses [gulp-typescript transpiler](https://www.npmjs.com/package/gulp-typescript), a great plugin mainted by [ivogabe](https://github.com/ivogabe) and other 21 contributors. Among its best features we highlight:
 
  - Very fast rebuilds by using incremental compilation

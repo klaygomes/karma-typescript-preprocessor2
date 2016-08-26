@@ -42,7 +42,7 @@ module.exports = (function (testMode) {
         var compilerOptions = (config.compilerOptions || config.tsconfigOverrides) || {};
 
         if(!_.isObject(compilerOptions) || _.isDate(compilerOptions)){
-            throw new Error("compilerOptions if defined, show be an object.")
+            throw new Error("compilerOptions if defined, must be an object.")
         }
 
         var defultCompilerOptions = {

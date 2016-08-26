@@ -1,7 +1,7 @@
 /* global process*/
 
 /*
-    dirty hack to prevent a annoying bug from gulp-typescript
+    dirty hack to prevent a annoying bug from gulp-typescript while testing using karma
 */
 
 var isInTestMode = process.env.testMode === "true";
@@ -124,13 +124,13 @@ module.exports = (function (testMode) {
             }, filepath);
         }
 
-        //responsible to flush cache and notify karma
+        //responsible to flush the cache and notify karma
         function _releaseBuffer() {
             var buffered;
 
             while (buffered = _servedBuffer.shift()) {
                 _serveFile(buffered.file, buffered.done);
-                //it is possible start compiling while in relese
+                //it is possible to start compiling while releasing files
                 if (state.compilationCompleted != _currentState)
                     break;
             }
@@ -143,7 +143,7 @@ module.exports = (function (testMode) {
 
         //Called to normalize file paths
         function _normalize(path){
-            return path.replace(/[\/|\\]/g, sep);
+            return path.replace(/[\/|\\]/g,  transformPath(sep));
         }
 
         //Used to fetch files from buffer
@@ -154,9 +154,7 @@ module.exports = (function (testMode) {
                 , temp = []
                 , wasCompiled;
 
-            requestedFile.path  = transformPath(requestedFile.path);
-
-            log.debug("Fetching " + requestedFile.path + ' from buffer');
+            log.debug("Fetching " + transformPath(requestedFile.path) + " from buffer");
 
 
             if (requestedFile.sha) {
@@ -167,7 +165,7 @@ module.exports = (function (testMode) {
             }
 
             while (compiled = _compiledBuffer.shift()) {
-                if (_normalize(transformPath(compiled.path)) === _normalize(requestedFile.path)) {
+                if (_normalize(compiled.path) === _normalize(requestedFile.path)) {
                     wasCompiled = true;
                     done(null, compiled.contents.toString());
                 } else {
@@ -179,7 +177,7 @@ module.exports = (function (testMode) {
             _compiledBuffer = temp;
 
             //if file was not found in the stream
-            //maybe it is not compiled or it is a definition file
+            //maybe it is not compiled or it is a definition file, so we don't need to worry about
             if (!wasCompiled) {
                 log.debug(requestedFile.originalPath + ' was not found. Maybe it was not compiled or it is a definition file.');
                 done(null, dummyFile('This file was not compiled'));

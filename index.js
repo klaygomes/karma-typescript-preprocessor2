@@ -143,7 +143,7 @@ module.exports = (function (testMode) {
 
         //Called to normalize file paths
         function _normalize(path){
-            return path.replace(/[\/|\\]/g,  transformPath(sep));
+            return transformPath(path.replace(/[\/|\\]/g, sep));
         }
 
         //Used to fetch files from buffer

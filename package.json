@@ -7,13 +7,17 @@
     "test": "mocha --require test/support/env --reporter spec --bail --check-leaks test/"
   },
   "devDependencies": {
-    "gulp": "^3.9.0",
-    "underscore": "1.8.3",
-    "typescript": "1.6.2"
+
   },
   "dependencies": {
     "gulp-sourcemaps": "^1.11.0",
-    "gulp-typescript": "^2.14.1"
+    "gulp-typescript": "^2.14.1",
+    "lodash.assign": "^4.2.0",
+    "lodash.isarray": "^4.0.0",
+    "lodash.isdate": "^4.0.1",
+    "lodash.isfunction": "^3.0.8",
+    "lodash.isobject": "^3.0.2",
+    "lodash.reduce": "^4.6.0"
   },
   "repository": {
     "type": "git",

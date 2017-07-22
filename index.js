@@ -42,7 +42,7 @@ function factoryTypeScriptPreprocessor(logger, config, basePath) {
         typescript: undefined
     };
 
-    assignIn(compilerOptions, defaultCompilerOptions);
+    assignIn(defaultCompilerOptions, compilerOptions);
 
 
     /*
@@ -201,10 +201,3 @@ factoryTypeScriptPreprocessor.$inject = ["logger", "config.typescriptPreprocesso
 module.exports = {
     "preprocessor:typescript": ["factory", factoryTypeScriptPreprocessor]
 };
-
-
-
-
-
-
-
